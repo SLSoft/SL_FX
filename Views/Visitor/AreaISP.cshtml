@@ -1,0 +1,339 @@
+﻿@{
+    ViewBag.Title = "访客区域分析";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    var area_url = "http://60.191.205.94/StatProvince?sId=" + website_id + "&startDate=";
+    var dataStatus = [];
+
+    $(function () {
+        $("#selitem").html($('input[type="radio"][name="rad"]:checked').next("label").text());
+
+        $("#trigger").powerFloat({
+            target: $("#targetBox"),
+            width: "150px"
+        });
+
+        $("#seltag").click(function () {
+            var a = "uv";
+            a = $('input[type="radio"][name="rad"]:checked').val();
+            setmap(dataStatus, a);
+            createpiecharts(getpiedata(dataStatus, a));
+            $("#selitem").html($('input[type="radio"][name="rad"]:checked').next("label").text());
+        });
+        var nowDate = new Date();
+        var str = nowDate.getFullYear() + "-" + (nowDate.getMonth() + 1) + "-" + nowDate.getDate();
+        $("#f_date").val(str);
+        getJosnDataByAPI(area_url + str + "&endDate=" + str, "areacallback");
+    });
+
+    function setmap(data, type) {
+        $('#map').html("");
+        $('#map').unbind();
+        $('#map').vectorMap({
+            map: 'china_zh',
+            backgroundColor: false,
+            zoomMin: 2,
+            hoverColor: "#FFFFCC",
+            //显示各地区名称和活动
+            onLabelShow: function (event, label, code) {
+                $.each(data, function (i, items) {
+                    if (code == items.PID) {
+                        label.html(items.PName + ":" + getshowitem(items, type));
+                    }
+                });
+            },
+            //鼠标移入省份区域，改变鼠标状态
+            onRegionOver: function (event, code) {
+                $.each(data, function (i, items) {
+                    $('#map').css({ cursor: 'pointer' });
+                });
+            },
+            //鼠标移出省份区域，改回鼠标状态
+            onRegionOut: function (event, code) {
+                $.each(data, function (i, items) {
+                    $('#map').css({ cursor: 'auto' });
+                    //                    var josnStr = "{" + items.id + setcolor(getshowitem(items, type));
+                    //                    $('#map').vectorMap('set', 'colors', eval('(' + josnStr + ')'));
+                });
+            },
+            //点击有活动的省份区域，打开对应活动列表页面
+            onRegionClick: function (event, code) {
+                $.each(data, function (i, items) {
+                    if ((code == items.PID) && (items.pvnum != '')) {
+                        //window.location.href = items.url;
+                    }
+                });
+            }
+        });
+        //改变有活动省份区域的颜色
+        var arr = [];
+        $.each(data, function (i, items) {
+            if (getshowitem(items, type) > 0)
+                arr.push(getshowitem(items, type));
+        });
+
+        bSort(arr);
+        var mid = arr[Math.round(arr.length / 2)];
+
+        $.each(data, function (i, items) {
+            var josnStr = "{" + items.PID + setcolor(getshowitem(items, type), mid);
+            $('#map').vectorMap('set', 'colors', eval('(' + josnStr + ')'));
+        });
+        $('#mapcolor').remove();
+        $('#dvchart').after("<div id='mapcolor' style='clear:both; margin-left:115px;'><img src='../Content/images/mapcolor.jpg' /></div>")
+    }
+
+    function getpiedata(data, type) {
+        var piedata = [];
+        var othernum = 0;
+        var inum = 0;
+        var n = 0;
+        $.each(bubbleSort(data), function (i, items) {
+            var temp = [];
+            temp.push(items.PName);
+            temp.push(parseFloat(getshowitem(items, type)));
+            if (n > 4) {
+                inum += parseFloat(getshowitem(items, type));
+            }
+            else {
+                if (getshowitem(items, type) > 0) {
+                    piedata.push(temp);
+                    n += 1;
+                }
+            }
+        });
+        var last = [];
+        last.push("其他");
+        last.push(inum);
+        piedata.push(last);
+        return piedata;
+    }
+
+
+
+    function getshowitem(data, type) {
+        var item = data;
+        switch (type) {
+            case "pv":
+                return typeof (item.pvnum) == 'undefined' || item.pvnum == '' ? 0 : item.pvnum;
+                break;
+            case "uv":
+                return typeof (item.uvnum) == 'undefined' ? 0 : item.uvnum;
+                break;
+            case "ip":
+                return typeof (item.ipnum) == 'undefined' ? 0 : item.ipnum;
+                break;
+            case "newuv":
+                return typeof (item.newuvnum) == 'undefined' ? 0 : item.newuvnum;
+                break;
+            case "vnum":
+                return typeof (item.vnum) == 'undefined' ? 0 : item.vnum;
+                break;
+            default:
+                return typeof (item.pvnum) == 'undefined' ? 0 : item.pvnum;
+                break;
+        }
+    }
+
+    function setcolor(data, mid) {
+        var num = data;
+        if (num >= (mid * 20)) {
+            return ":'#17184b'}";
+        }
+        if (num >= (mid * 10) && num < (mid * 20)) {
+            return ":'#404ca5'}";
+        }
+        if (num >= (mid * 5) && num < (mid * 10)) {
+            return ":'#4e5ab0'}";
+        }
+        if (num >= (mid * 1) && num < (mid * 5)) {
+            return ":'#5669b4'}";
+        }
+        if (num >= (mid * 0.5) && num < (mid * 1)) {
+            return ":'#7e8bbf'}";
+        }
+        if (num >= (mid * 0.1) && num < (mid * 0.5)) {
+            return ":'#8593c4'}";
+        }
+        if (num >= (mid * 0.05) && num < (mid * 0.1)) {
+            return ":'#bcbcde'}";
+        }
+        return ":'#bbc9e6'}";
+    }
+
+    function createpiecharts(data) {
+        $('#piechart').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: ''
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.y}</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        color: '#000000',
+                        connectorColor: '#000000',
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                    }
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: $('input[type="radio"][name="rad"]:checked').next("label").text(),
+                data: data
+            }]
+        });
+    }
+
+    function createShowingTable(data) {
+        //获取后台传过来的jsonData,并进行解析 
+        //var dataArray = $.parseJSON(data.jsonData);
+        //此处需要让其动态的生成一个table并填充数据
+        var dataArray = data;
+        var tableStr = "";
+        tableStr = tableStr + "<thead><th class='sorttable_nosort'>省份</th><th>浏览次数(PV)</th><th>独立访客(UV)</th><th>IP</th><th>新独立访客</th><th>访问次数</th><th>人均浏览页数</th><th>平均访问深度</th><th>平均访问时长</th><th>跳出率</th></thead>";
+        var len = dataArray.length;
+        var sumPV = 0;
+        var sumUV = 0;
+        var sumIP = 0;
+        var sumNEWUV = 0;
+        var sumUNUM = 0;
+        for (var i = 0; i < len; i++) {
+            tableStr = tableStr + "<tr><td>" + dataArray[i].PName + "</td><td>" + dataArray[i].pvnum + "</td><td>" + dataArray[i].uvnum + "</td><td>" + dataArray[i].ipnum + "</td><td>" + dataArray[i].newuvnum + "</td><td>" + dataArray[i].vnum + "</td><td>" + dataArray[i].avgpage + "</td><td>" + dataArray[i].avgdepth + "</td><td>" + dataArray[i].avglength + "</td><td>" + dataArray[i].jumpnum + "</td></tr>";
+        }
+        tableStr = tableStr + "";
+        //将动态生成的table添加的事先隐藏的div中. 
+        $("#AreadataTable").html(tableStr);
+    }
+
+
+    function areacallback(data) {
+        dataStatus = data;
+        setmap(dataStatus, "pv");
+        createpiecharts(getpiedata(data, "pv"));
+        createShowingTable(data);
+        $("#AreadataTable").addClass("sortable");
+        sorttable.init();
+    }
+
+    function getJosnDataByAPI(url, fun) {
+        dataStatus = [];
+        $.ajax({
+            url: url,
+            type: "get",
+            dataType: "jsonp",
+            jsonp: "callback",
+            jsonpCallback: fun
+        });
+    }
+
+    function showAll(id) {
+        getJosnDataByAPI(area_url + $("#startdate").val() + "&endDate=" + $("#enddate").val(), "areacallback");
+        var ctime = $("#startdate").val() == $("#enddate").val() ? $("#startdate").val() : $("#startdate").val() + "至" + $("#enddate").val()
+        $("#ctime").html(ctime);
+    }
+</script>
+
+<div>
+<div class="toolbar cf"> 
+          <!--==操作按钮==-->
+          <div class="tool_date cf">
+            <div class="title cf">
+              <div class="more">               
+                <ul class="select" id="toolbar"><li class="active"><a href="#" id="aToday" onclick="changeday(this.id)">今天</a></li><li class=""><a href="#" id="aYesterday" onclick="changeday(this.id)">昨天</a></li><li class=""><a href="#" id="aRecent7Days" onclick="changeday(this.id)">最近7天</a></li><li class=""><a href="#" id="aRecent30Days" onclick="changeday(this.id)">最近30天</a></li></ul>
+              </div>
+              <div class="date" id="div_date"><input size="30" id="f_date" /></div>
+              <div class="date" id="div_compare_date"><input type="button" id="query" value="确 定" style="width:60px" onclick="showAll(1)"/></div>
+            </div>
+          </div>
+        </div>
+<button id="trigger" class="btn_thin1"><i class="i_opt"></i>设置指标</button>(当前选择：<span id="selitem"></span>)
+<div id="dvchart" style="min-width: 100%; height: 100%;margin:0 auto;">
+    <div id="map" style="margin-left: 10px; padding-top: 10px; padding-left: 10px;background: white; width: 520px; height: 360px; float:left"></div>
+    <div id="piechart" style="min-width: 400px; height: 340px; margin: 0 auto; float:left"></div>
+</div>
+<div id="table_column" class="column cf" style="clear:both">
+          <div class="title">
+            地区分布汇总表@*----<a href="ISPArea.cshtml">网络运营商</a>*@</div>
+          <div>
+            <table id="AreadataTable"></table> 
+          </div>
+</div>
+</div>
+<div style="position: absolute;background: #ffffe6;border: 1px solid #aaa; display:none; padding-left:1px" id="targetBox">
+      <ul style="list-style:none; margin:0; padding:0;">
+        <li><input id="radpv" name="rad" type="radio" value="pv" checked="checked" /><label for="radpv">浏览次数</label></li>
+        <li><input id="raduv" name="rad" type="radio" value="uv" /><label for="raduv">独立访客</label></li>
+        <li><input id="radip" name="rad" type="radio" value="ip" /><label for="radip">IP</label></li>
+        <li><input id="radnewuv" name="rad" type="radio" value="newuv" /><label for="radnewuv">新独立访客</label></li>
+        <li><input id="radvnum" name="rad" type="radio" value="vnum" /><label for="radvnum">访问次数</label></li>
+      </ul>
+      <p><input id="seltag" type="button" value="确定"/><a href="#" onclick="$('#targetBox').hide();">取消</a></p>
+</div>
+<script type="text/javascript">//<![CDATA[
+
+
+    var SELECTED_RANGE = null;
+    function getSelectionHandler() {
+        var startDate = null;
+        var ignoreEvent = false;
+        return function (cal) {
+            var selectionObject = cal.selection;
+
+            // avoid recursion, since selectRange triggers onSelect
+            if (ignoreEvent)
+                return;
+
+            var selectedDate = selectionObject.get();
+            if (startDate == null) {
+                startDate = selectedDate;
+                SELECTED_RANGE = null;
+                //document.getElementById("info").innerHTML = "Click to select end date";
+
+                // comment out the following two lines and the ones marked (*) in the else branch
+                // if you wish to allow selection of an older date (will still select range)
+                //cal.args.min = Calendar.intToDate(selectedDate);
+                cal.refresh();
+                $("#startdate").val(Calendar.printDate(Calendar.intToDate(selectedDate), "%Y-%m-%d"));
+                $("#enddate").val(Calendar.printDate(Calendar.intToDate(selectedDate), "%Y-%m-%d"));
+            } else {
+                ignoreEvent = true;
+                selectionObject.selectRange(startDate, selectedDate);
+                ignoreEvent = false;
+                SELECTED_RANGE = selectionObject.sel[0];
+
+                // alert(SELECTED_RANGE.toSource());
+                //
+                // here SELECTED_RANGE contains two integer numbers: start date and end date.
+                // you can get JS Date objects from them using Calendar.intToDate(number)
+
+                startDate = null;
+
+                // (*)
+                cal.args.min = null;
+                cal.refresh();
+                $("#startdate").val(Calendar.printDate(Calendar.intToDate(SELECTED_RANGE[0]), "%Y-%m-%d"));
+                $("#enddate").val(Calendar.printDate(Calendar.intToDate(SELECTED_RANGE[1]), "%Y-%m-%d"));
+            }
+        };
+    };
+
+    Calendar.setup({
+        inputField: "f_date",
+        trigger: "f_date",
+        date: new Date(),
+        selectionType: Calendar.SEL_SINGLE,
+        onSelect: getSelectionHandler()
+    });
+    //]]></script>

@@ -1,0 +1,110 @@
+﻿@{
+    ViewBag.Title = "访问明细";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    var OnLineSession_url = "http://60.191.205.94/OnLineSession?sId=" + website_id + "&startDate=";
+    var AccessList_url = "http://60.191.205.94/AccessList?sCode=";
+
+    $(function () {
+        var nowDate = new Date();
+        var str = nowDate.getFullYear() + "-" + (nowDate.getMonth() + 1) + "-" + nowDate.getDate();
+        $("#f_date").val(str);
+        $("#fwmx").addClass("current");
+
+        getJosnDataByAPI(OnLineSession_url + str + "&endDate=" + str, "getsessiondata");
+    });
+
+    function getsessiondata(data) {
+        if (data != null) {
+            createShowingTable(data);
+        }
+    }
+
+    function showAll(id) {
+        getJosnDataByAPI(OnLineSession_url + $("#f_date").val() + "&endDate=" + $("#f_date").val(), "getsessiondata");
+    }
+
+    function createShowingTable(data) {
+        //获取后台传过来的jsonData,并进行解析 
+        //var dataArray = $.parseJSON(data.jsonData);
+        //此处需要让其动态的生成一个table并填充数据
+        var dataArray = data;
+        var tableStr = "";
+        tableStr = tableStr + "<thead><tr><th>最近浏览时间</th><th>访问来源</th><th>最后受访页面</th><th>访问时长</th><th>深度</th><th>IP</th><th>地区</th></tr></thead>";
+        var len = dataArray.length > 30 ? 30 : dataArray.length;
+
+        for (var i = 0; i < len; i++) {
+            tableStr = tableStr + "<tr><td><a id='img" + dataArray[i].Code + "' style='cursor:pointer;' onclick=createDetailTable(this.id) > + </a>" + dataArray[i].dTime + "</td><td><a target='_blank' href='" + decodeURIComponent(dataArray[i].SourcePath) + "'>" + decodeURIComponent(dataArray[i].SourcePath).substr(0, 30) + "</a></td><td><a target='_blank' href='" + decodeURIComponent(dataArray[i].LastAccessPage) + "'>" + decodeURIComponent(dataArray[i].LastAccessPage).substr(0, 35) + "</a></td><td>" + dataArray[i].LengthOfSession + "</td><td>" + dataArray[i].SessionDepth + "</td><td>" + dataArray[i].ClientIP + "</td><td>" + dataArray[i].Province + dataArray[i].City + "</td></tr>";
+            tableStr = tableStr + "<tr id='tr0" + dataArray[i].Code + "' style='display:none;'><td colspan='7'><table><tr><td>" + dataArray[i].ISP + "</td><td>" + dataArray[i].Language + "</td><td>" + dataArray[i].dType + "</td><td>" + dataArray[i].OS + "</td><td>" + dataArray[i].size + "</td><td>" + dataArray[i].Browser + "</td><td>" + dataArray[i].BrowserEdition + "</td></tr></table></td></tr>";
+            tableStr = tableStr + "<tr id='tr" + dataArray[i].Code + "' style='display:none;'><td colspan='7'><table id='dtable" + dataArray[i].Code + "'></table></td></tr>";
+        }
+        tableStr = tableStr + "";
+        //将动态生成的table添加的事先隐藏的div中. 
+        $("#dataTable").html(tableStr);
+    }
+
+    function createDetailTable(id) {
+        var sessionid = id.substring(3);
+        $("#selid").val(sessionid);
+        $("#tr" + sessionid).toggle(); $("#tr0" + sessionid).toggle();
+        if ($("#img" + sessionid).html() == ' - ') {
+            $("#img" + sessionid).html(' + ');
+        }
+        else {
+            $("#img" + sessionid).html(' - ');
+            getJosnDataByAPI(AccessList_url + sessionid, "detail");
+        }
+    }
+
+    function detail(data) {
+        var sessionid = $("#selid").val();
+        var dataArray = data;
+        var tableStr = "";
+        tableStr = tableStr + "<tr><td>序号</td><td>打开时间</td><td>停留时长</td><td>页面地址</td></tr>";
+        if (dataArray != null) {
+            var len = dataArray.length;
+            for (var i = 0; i < len; i++) {
+                tableStr = tableStr + "<tr><td>" + dataArray[i].VDID + "</td><td>" + dataArray[i].OPENTIME + "</td><td>" + dataArray[i].LENGTHOFPAGE + "</td><td>" + dataArray[i].PAGEURL + "</td></tr>";
+            }
+            tableStr = tableStr + "";
+            $("#dtable" + sessionid).html(tableStr);
+
+        }
+        else {
+            alert("找不到访问明细");
+        }
+    }
+
+</script>
+<div>
+<input type="hidden" id="selid" />
+    <div class="toolbar cf"> 
+          <!--==操作按钮==-->
+          <div class="tool_date cf">
+            <div class="title cf">
+              <div class="more">               
+              </div>
+              <div class="date" id="div_date"><input size="30" id="f_date" /></div>
+              <div class="date" id="div_compare_date"><input type="button" id="query" value="确 定" style="width:60px" onclick="showAll(1)"/></div>
+            </div>
+          </div>
+        </div>
+    <div id="table_column" class="column cf">
+          <div class="title">访问明细汇总表</div>
+          <div>
+            <table id="dataTable" class="tablesorter"></table>
+          </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    Calendar.setup({
+        inputField: "f_date",
+        trigger: "f_date",
+        date: new Date(),
+        selectionType: Calendar.SEL_SINGLE,
+        onSelect: function () { this.hide() }
+    });
+</script>

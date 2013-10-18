@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "网站访客关注点详细情况统计";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    var accesspath_url = "http://60.191.205.94/StatAccessPath?sId=" + website_id + "&startDate=";
+
+    $(function () {
+        getJosnDataByAPI(accesspath_url + $("#startdate").val() + "&endDate=" + $("#enddate").val(), "sourcepathcallback");
+    });
+
+    function sourcepathcallback(data) {
+        createShowingTable(data);
+    }
+
+    function createShowingTable(data) {
+        //获取后台传过来的jsonData,并进行解析 
+        //var dataArray = $.parseJSON(data.jsonData);
+        //此处需要让其动态的生成一个table并填充数据
+        var dataArray = data;
+        var tableStr = "";
+        tableStr = tableStr + "<thead><tr id='dataTheadTr'><th>序号</th><th>受访页面top10</th><th>查看用户视点</th><th>今日浏览次数(PV)</th></tr></thead>";
+        var len = dataArray.length > 10 ? 10 : dataArray.length;
+        for (var i = 0; i < len; i++) {
+            var t_url = "http://60.191.205.94/UserView/show?sid=" + website_id + "&sdate=" + $("#startdate").val() + "&strurl=";
+            tableStr = tableStr + "<tr><td>" + (i + 1) + "</td><td><a target='_blank' href='" + dataArray[i].path + "'>" + dataArray[i].path.substr(0, 40) + "</a></td><td><a target='_blank' href='" + t_url + dataArray[i].path + "'>查看</a></td><td>" + dataArray[i].pvnum + "</td></tr>";
+        }
+        tableStr = tableStr + "";
+        //将动态生成的table添加的事先隐藏的div中. 
+        $("#dataTable").html(tableStr);
+    }
+
+   
+</script>
+
+<div>
+    <div id="table_column" class="column cf" style="clear:both">
+        <div class="title">用户视点汇总表</div>
+            <div>
+                <table id="dataTable" class="tablesorter"></table>
+            </div>
+    </div>
+</div>
+

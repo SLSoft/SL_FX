@@ -1,0 +1,84 @@
+﻿body {
+    font-size: .85em;
+    font-family: "Trebuchet MS", Verdana, Helvetica, Sans-Serif;
+    margin: 0;
+    padding: 0;
+}
+
+a:link {
+    color: #034af3;
+    text-decoration: underline;
+}
+
+a:visited {
+    color: #505abc;
+}
+
+a:hover {
+    color: #1d60ff;
+    text-decoration: none;
+}
+
+a:active {
+    color: #12eb87;
+}
+.setbar {
+    clear: both;
+    padding: 0 0 2px;
+    margin: 0;
+    text-align: right;
+}
+.setbar li {
+        display: inline;
+        list-style: none;
+        float:left;
+    }
+
+.setbar li a {
+    padding: 10px 20px;
+    font-weight: bold;
+    text-decoration: none;
+    line-height: 2.8em;
+    color: #034af3;
+            
+    /*CSS3 properties*/
+    border-radius: 4px 4px 0 0;
+    -webkit-border-radius: 4px 4px 0 0;
+    -moz-border-radius: 4px 4px 0 0;
+}
+
+.setbar li a:hover {
+    background-color: #fff;
+    text-decoration: none;
+}
+
+.setbar li a:active {
+    background-color: #a6e2a6;
+    text-decoration: none;
+}
+
+.setbar li.selected a {
+    background-color: #fff;
+    color: #000;
+}
+.sumtb
+{
+    clear:both;
+    width:100%;
+    text-align:center;
+    line-height:30px;
+    border:solid 1px #c0c0c0;
+    border-collapse:collapse;
+}
+.sumtb tr
+{
+    border:solid 1px #c0c0c0;
+    }
+    .sumtb tr th
+{
+    border:solid 1px #c0c0c0;
+    }
+    .sumtb tr td
+{
+    border:solid 1px #c0c0c0;
+    }

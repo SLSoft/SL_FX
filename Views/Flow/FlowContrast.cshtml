@@ -1,0 +1,311 @@
+﻿@{
+    ViewBag.Title = "网站访问量对比分析";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    var contrast_hour_url = "http://60.191.205.94/ContrastByHour?sId=" + website_id + "&startDate=";
+    var contrast_day_url = "http://60.191.205.94/ContrastByDay?sId=" + website_id + "&startDate=";
+    var date1 = "";
+    var date2 = "";
+    var dataurl = contrast_hour_url;
+
+    $(function () {
+        $("#dbfx").addClass("current");
+        $("#selitem").html($('input[type="radio"][name="rad"]:checked').next("label").text());
+        $("#f_date").val($("#startdate").val());
+        $("#c_date").val($("#begindate").val());
+
+        $("#trigger").powerFloat({
+            target: $("#targetBox"),
+            width: "150px"
+        });
+
+        $("#seltag").click(function () {
+            getJosnDataByAPI(dataurl + $("#startdate").val() + "&endDate=" + $("#enddate").val() + "&beginDate=" + $("#begindate").val() + "&overDate=" + $("#overdate").val(), "contrastcallback");
+            $("#selitem").html($('input[type="radio"][name="rad"]:checked').next("label").text());
+        });
+
+        //getJosnDataByAPI(contrast_hour_url + $("#startdate").val() + "&endDate=" + $("#enddate").val() + "&beginDate=" + $("#begindate").val() + "&overDate=" + $("#overdate").val(), "contrastcallback");
+        //getJosnDataByAPI(contrast_day_url, "contrastdaycallback");
+        showAll(1);
+    });
+
+    function contrastdaycallback(data) {
+        createSumTable(data);
+    }
+
+    function contrastcallback(data) {
+        var dataArray = data;
+        var len = dataArray == null ? 0 : dataArray.length;
+        var xdata = [];
+        var ydata = [];
+        var cdata1 = { name: $('input[type="radio"][name="rad"]:checked').next("label").text() + "(" + date1 + ")", data: [] };
+        var cdata2 = { name: $('input[type="radio"][name="rad"]:checked').next("label").text() + "(" + date2 + ")", data: [] };
+        for (var i = 0; i < len; i++) {
+            if (typeof (dataArray[i].hour) == "undefined")
+                xdata.push(dataArray[i].date);
+            else
+                xdata.push(dataArray[i].hour.substr(0, 5));
+            switch (sel = $('input[type="radio"][name="rad"]:checked').val()) {
+                case "pv":
+                    cdata1.data.push(dataArray[i].pvnum == "-" ? 0 : parseFloat(dataArray[i].pvnum));
+                    cdata2.data.push(dataArray[i].Cpvnum == "-" ? 0 : parseFloat(dataArray[i].Cpvnum));
+                    break;
+                case "uv":
+                    cdata1.data.push(dataArray[i].uvnum == "-" ? 0 : parseFloat(dataArray[i].uvnum));
+                    cdata2.data.push(dataArray[i].Cuvnum == "-" ? 0 : parseFloat(dataArray[i].Cuvnum));
+                    break;
+                case "ip":
+                    cdata1.data.push(dataArray[i].ipnum == "-" ? 0 : parseFloat(dataArray[i].ipnum));
+                    cdata2.data.push(dataArray[i].Cipnum == "-" ? 0 : parseFloat(dataArray[i].Cipnum));
+                    break;
+                case "newuv":
+                    cdata1.data.push(dataArray[i].newuvnum == "-" ? 0 : parseFloat(dataArray[i].newuvnum));
+                    cdata2.data.push(dataArray[i].Cnewuvnum == "-" ? 0 : parseFloat(dataArray[i].Cnewuvnum));
+                    break;
+                case "count":
+                    cdata1.data.push(dataArray[i].vnum == "-" ? 0 : parseFloat(dataArray[i].vnum));
+                    cdata2.data.push(dataArray[i].Cvnum == "-" ? 0 : parseFloat(dataArray[i].Cvnum));
+                    break;
+                default:
+                    break;
+            }
+        }
+        ydata.push(cdata1); ydata.push(cdata2);
+        createcharts(xdata, ydata);
+        createShowingTable(data);
+    }
+
+    function createcharts(xdata, ydata) {
+        $('#container').highcharts({
+            title: {
+                text: '网站访问情况对比图',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+                categories: xdata,
+                title: {
+                    text: '时间（小时）/日期'
+                },
+                gridLineWidth: 1,
+                tickmarkPlacement: 'on',
+                labels: { step: 2 }
+            },
+            yAxis: {
+                title: {
+                    align: 'high',
+                    offset: 0,
+                    text: '访问量',
+                    rotation: 0,
+                    y: -10
+                },
+                min: 0,
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.series.name + '</b><br/>' +
+                    this.x + ':' + this.y;
+                }
+            },
+            legend: {
+                layout: 'horizontal',
+                align: 'center',
+                verticalAlign: 'bottom',
+                borderWidth: 1
+            },
+            series: ydata
+        });
+    }
+
+    function showAll(id) {
+        setdate();
+        var startdate = $("#startdate").val();
+        var enddate = $("#enddate").val();
+        var begindate = $("#begindate").val();
+        var overdate = $("#overdate").val();
+
+
+        getJosnDataByAPI(dataurl + $("#startdate").val() + "&endDate=" + $("#enddate").val() + "&beginDate=" + $("#begindate").val() + "&overDate=" + $("#overdate").val(), "contrastcallback");
+        //        var ctime = $("#startdate").val() == $("#enddate").val() ? $("#startdate").val() : $("#startdate").val() + "至" + $("#enddate").val()
+        //        $("#ctime").html(ctime);
+    }
+
+    function createShowingTable(data) {
+        //获取后台传过来的jsonData,并进行解析 
+        //var dataArray = $.parseJSON(data.jsonData);
+        //此处需要让其动态的生成一个table并填充数据
+        var dataArray = data;
+
+        var tableStr = "";
+        tableStr = tableStr + "<thead><tr><th></th><th colspan='3' style='width:260px;text-align:center'>浏览次数(PV)</th><th colspan='3' style='width:260px;text-align:center'>独立访客(UV)</th><th colspan='3' style='width:260px;text-align:center'>IP</th><th colspan='3' style='width:260px;text-align:center'>新独立访客</th><th colspan='3' style='width:260px;text-align:center'>访问次数</th></tr>";
+        tableStr = tableStr + "<tr><th>时段</th><th>" + date1 + "</th><th>" + date2 + "</th><th>变化情况</th><th>" + date1 + "</th><th>" + date2 + "</th><th>变化情况</th><th>" + date1 + "</th><th>" + date2 + "</th><th>变化情况</th><th>" + date1 + "</th><th>" + date2 + "</th><th>变化情况</th><th>" + date1 + "</th><th>" + date2 + "</th><th>变化情况</th></tr></thead>";
+        var len = dataArray.length;
+
+        for (var i = 0; i < len; i++) {
+            tableStr = tableStr + "<tr><td>" + (typeof (dataArray[i].hour) == "undefined" ? dataArray[i].date : dataArray[i].hour) + "</td><td>" + dataArray[i].pvnum + "</td><td>" + dataArray[i].Cpvnum + "</td><td>" + setcolor(dataArray[i].pvnum, dataArray[i].Cpvnum) + "</td><td>" + dataArray[i].uvnum + "</td><td>" + dataArray[i].Cuvnum + "</td><td>" + setcolor(dataArray[i].uvnum, dataArray[i].Cuvnum) + "</td><td>" + dataArray[i].ipnum + "</td><td>" + dataArray[i].Cipnum + "</td><td>" + setcolor(dataArray[i].ipnum, dataArray[i].Cipnum) + "</td><td>" + dataArray[i].newuvnum + "</td><td>" + dataArray[i].Cnewuvnum + "</td><td>" + setcolor(dataArray[i].newuvnum, dataArray[i].Cnewuvnum) + "</td><td>" + dataArray[i].vnum + "</td><td>" + dataArray[i].Cvnum + "</td><td>" + setcolor(dataArray[i].vnum, dataArray[i].Cvnum) + "</td></tr>";
+        }
+        tableStr = tableStr + "";
+        //将动态生成的table添加的事先隐藏的div中. 
+        $("#dataTable").html(tableStr);
+    }
+
+    function createSumTable(data) {
+        //获取后台传过来的jsonData,并进行解析 
+        //var dataArray = $.parseJSON(data.jsonData);
+        //此处需要让其动态的生成一个table并填充数据
+        var dataArray = data;
+        var tableStr = "";
+        tableStr = tableStr + "<tr><th></th><th>浏览次数(PV)</th><th>独立访客(UV)</th><th>IP</th><th>新独立访客</th><th>访问次数</th><th>人均浏览页数</th><th>平均访问深度</th><th>平均访问时长</th><th>跳出率</th></tr>";
+        tableStr = tableStr + "<tr><td>" + dataArray[0].date + "</td><td>" + dataArray[0].pvnum + "</td><td>" + dataArray[0].uvnum + "</td><td>" + dataArray[0].ipnum + "</td><td>" + dataArray[0].newuvnum + "</td><td>" + dataArray[0].vnum + "</td><td>" + dataArray[0].avgpage + "</td><td>" + dataArray[0].avgdepth + "</td><td>" + dataArray[0].avglength + "秒</td><td>" + dataArray[0].jumpnum + "</td></tr>";
+        tableStr = tableStr + "<tr><td>" + dataArray[0].date + "</td><td>" + dataArray[0].Cpvnum + "</td><td>" + dataArray[0].Cuvnum + "</td><td>" + dataArray[0].Cipnum + "</td><td>" + dataArray[0].Cnewuvnum + "</td><td>" + dataArray[0].Cvnum + "</td><td>" + dataArray[0].Cavgpage + "</td><td>" + dataArray[0].Cavgdepth + "</td><td>" + dataArray[0].Cavglength + "秒</td><td>" + dataArray[0].Cjumpnum + "</td></tr>";
+        tableStr = tableStr + "";
+        //将动态生成的table添加的事先隐藏的div中. 
+        $("#sumdata").html(tableStr);
+    }
+
+
+
+    function setcolor(x, y) {
+        var changenum = x - y;
+        var point = (x == 0 || y == 0) ? "-" : (100 * (x - y) / y).toFixed(2) + "%";
+        if (x - y >= 0) {
+            return "<span style='color:#ff0000'>+" + changenum + "(" + point + ")</span>"
+        }
+        else {
+            return "<span style='color:#00ff00'>" + changenum + "(" + point + ")</span>"
+        }
+    }
+
+    function setdate() {
+        if ($("#startdate").val() == $("#enddate").val() && $("#begindate").val() == $("#overdate").val()) {
+            date1 = $("#startdate").val();
+            date2 = $("#begindate").val();
+            dataurl = contrast_hour_url;
+        }
+        else {
+            date1 = "时段一";
+            date2 = "时段二";
+            dataurl = contrast_day_url;
+        }
+    }
+</script>
+
+<div>
+    <table id="sumdata" class="sumtb"></table>
+    <div class="toolbar cf"> 
+          <!--==操作按钮==-->
+          <div class="tool_date cf">
+            <div class="title cf">
+              <div class="more">               
+              </div>
+              <div class="date" id="div_date"><input size="15" id="f_date" />对比&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input size="15" id="c_date" /></div>
+              <div class="date" id="div_compare_date"><input type="button" id="query" value="确 定" style="width:60px" onclick="showAll(1)"/></div>
+            </div>
+          </div>
+        </div>
+    <button id="trigger" class="btn_thin1"><i class="i_opt"></i>设置指标</button>(当前选择：<span id="selitem"></span>)
+    <div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+    
+    <div id="table_column" class="column cf">
+          <div class="title">
+            对比分析汇总表 </div>
+          <div style="width:99%;overflow:auto;">
+            <table id="dataTable" class="tablesorter"></table>
+          </div>
+        </div>
+</div>
+<div style="position: absolute;background: #ffffe6;border: 1px solid #aaa; display:none; padding-left:1px" id="targetBox">
+      <ul style="list-style:none; margin:0; padding:0;">
+        <li><input id="radpv" name="rad" type="radio" value="pv" checked="checked" /><label for="radpv">浏览次数</label></li>
+        <li><input id="raduv" name="rad" type="radio" value="uv" /><label for="raduv">独立访客</label></li>
+        <li><input id="radip" name="rad" type="radio" value="ip" /><label for="radip">IP</label></li>
+        <li><input id="radnewuv" name="rad" type="radio" value="newuv" /><label for="radnewuv">新独立访客</label></li>
+        <li><input id="radvnum" name="rad" type="radio" value="count" /><label for="radvnum">访问次数</label></li>
+      </ul>
+      <p><input id="seltag" type="button" value="确定"/><a href="#" onclick="$('#targetBox').hide();">取消</a></p>
+</div>
+<script type="text/javascript">//<![CDATA[
+
+
+    var SELECTED_RANGE = null;
+    function getSelectionHandler(tag) {
+        var startDate = null;
+        var ignoreEvent = false;
+        return function (cal) {
+            var selectionObject = cal.selection;
+
+            // avoid recursion, since selectRange triggers onSelect
+            if (ignoreEvent)
+                return;
+
+            var selectedDate = selectionObject.get();
+            if (startDate == null) {
+                startDate = selectedDate;
+                SELECTED_RANGE = null;
+                //document.getElementById("info").innerHTML = "Click to select end date";
+
+                // comment out the following two lines and the ones marked (*) in the else branch
+                // if you wish to allow selection of an older date (will still select range)
+                //cal.args.min = Calendar.intToDate(selectedDate);
+                cal.refresh();
+                if (tag == 1) {
+                    $("#startdate").val(Calendar.printDate(Calendar.intToDate(selectedDate), "%Y-%m-%d"));
+                    $("#enddate").val(Calendar.printDate(Calendar.intToDate(selectedDate), "%Y-%m-%d"));
+                }
+                else {
+                    $("#begindate").val(Calendar.printDate(Calendar.intToDate(selectedDate), "%Y-%m-%d"));
+                    $("#overdate").val(Calendar.printDate(Calendar.intToDate(selectedDate), "%Y-%m-%d"));
+                }
+            } else {
+                ignoreEvent = true;
+                selectionObject.selectRange(startDate, selectedDate);
+                ignoreEvent = false;
+                SELECTED_RANGE = selectionObject.sel[0];
+
+                // alert(SELECTED_RANGE.toSource());
+                //
+                // here SELECTED_RANGE contains two integer numbers: start date and end date.
+                // you can get JS Date objects from them using Calendar.intToDate(number)
+
+                startDate = null;
+
+                // (*)
+                cal.args.min = null;
+                cal.refresh();
+                if (tag == 1) {
+                    $("#startdate").val(Calendar.printDate(Calendar.intToDate(SELECTED_RANGE[0]), "%Y-%m-%d"));
+                    $("#enddate").val(Calendar.printDate(Calendar.intToDate(SELECTED_RANGE[1]), "%Y-%m-%d"));
+                }
+                else {
+                    $("#begindate").val(Calendar.printDate(Calendar.intToDate(SELECTED_RANGE[0]), "%Y-%m-%d"));
+                    $("#overdate").val(Calendar.printDate(Calendar.intToDate(SELECTED_RANGE[1]), "%Y-%m-%d"));
+                }
+            }
+        };
+    };
+
+    Calendar.setup({
+        inputField: "f_date",
+        trigger: "f_date",
+        date: new Date(),
+        selectionType: Calendar.SEL_SINGLE,
+        onSelect: getSelectionHandler(1)
+    });
+    Calendar.setup({
+        inputField: "c_date",
+        trigger: "c_date",
+        date: new Date(),
+        selectionType: Calendar.SEL_SINGLE,
+        onSelect: getSelectionHandler(2)
+    });
+    //]]></script>

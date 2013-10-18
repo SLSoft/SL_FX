@@ -1,0 +1,207 @@
+﻿@{
+    ViewBag.Title = "访客在线统计";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    var onlinepv_url = "http://60.191.205.94/OnLinePV?sId=" + website_id + "&iTime=15";
+    var onlineuv_url = "http://60.191.205.94/OnLineUV?sId=" + website_id + "&iTime=15";
+    var onlinesum_url = "http://60.191.205.94/OnLineMaxUV?sId=" + website_id + "";
+    var onlinechange_url = "http://60.191.205.94/OnLineChange?sId=" + website_id + "&iTime=15";
+    var onlinesession_url = "http://60.191.205.94/OnLineSession?sId=" + website_id + "&startDate=";
+
+    $(function () {
+        $("#dqzx").addClass("current");
+
+        var nowDate = new Date();
+        var str = nowDate.getFullYear() + "-" + (nowDate.getMonth() + 1) + "-" + nowDate.getDate();
+        getJosnDataByAPI(onlinepv_url, "getonlinepv");
+        getJosnDataByAPI(onlineuv_url, "getonlineuv");
+        getJosnDataByAPI(onlinesum_url, "getonlinesum");
+        getJosnDataByAPI(onlinechange_url, "getonlinechange");
+        getJosnDataByAPI(onlinesession_url + str + "&endDate=" + str, "getonlinesession");
+    });
+
+    function getonlinepv(data) {
+        if (data != null) {
+            var strhtml = "<ul><li style='font-family:微软雅黑; font-size:14px; color:#2e91da; font-weight:bold; height:30px;'>最近15分钟访问情况汇总</li><li style='font-family:微软雅黑; font-size:14px; color:#2e91da; font-weight:bold; height:30px;'>浏览次数：" + data[0].PV + "</li><li style='font-family:微软雅黑; font-size:14px; color:#2e91da; font-weight:bold; height:30px;'>独立访客：" + data[0].UV + "</li><li style='font-family:微软雅黑; font-size:14px; color:#2e91da; font-weight:bold; height:30px;'>IP：" + data[0].IP + "</li></ul>";
+            $("#sumVisited").html(strhtml);
+        }
+    }
+    function getonlineuv(data) {
+        if (data != null) {
+            var piedata = [];
+            piedata.push(["新访客", parseFloat(data[0].NewUV)], ["老访客", parseFloat(data[0].UV)]);
+            createpiecharts(piedata);
+        }
+    }
+    function getonlinesum(data) {
+        if (data != null) {
+            var piedata = [];
+            var strhtml2 = "<p>最近1分钟（" + new Date().toLocaleString().substr(0, new Date().toLocaleString().length - 3) + "）</p><p>当前<b>" + data[0].CNum + "</b>人在线</p><p>今日最高:" + data[0].highNum + "（发生时间：" + data[0].time + "）</p>"
+            $("#surrentNum").html(strhtml2);
+        }
+    }
+    function getonlinechange(data) {
+        if (data != null) {
+            var xdata = [];
+            var ydata = [];
+            var pv = { name: '浏览次数', data: [] };
+            var uv = { name: '独立访客(UV)', data: [] };
+            var ip = { name: 'IP', data: [] };
+            var len = data == null ? 0 : data.length;
+            for (var i = 0; i < len; i++) {
+                xdata.push(data[i].time);
+                pv.data.push(parseFloat(data[i].PV));
+                uv.data.push(parseFloat(data[i].UV));
+                ip.data.push(parseFloat(data[i].IP));
+            }
+            ydata.push(pv); ydata.push(uv); ydata.push(ip);
+            createcharts(xdata, ydata);
+        }
+    }
+    function getonlinesession(data) {
+        if (data != null) {
+            createShowingTable(data);
+        }
+    }
+
+    function createcharts(xdata, ydata) {
+        $('#container').highcharts({
+            title: {
+                text: '最近15分钟网站访问情况',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+                categories: xdata,
+                title: {
+                    text: '时间（分钟）'
+                },
+                gridLineWidth: 1,
+                tickmarkPlacement: 'on',
+                labels: { step: 2 }
+            },
+            yAxis: {
+                title: {
+                    align: 'high',
+                    offset: 0,
+                    text: '访问量',
+                    rotation: 0,
+                    y: -10
+                },
+                min: 0,
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.series.name + '</b><br/>' +
+                    this.x + ':' + this.y;
+                }
+            },
+            legend: {
+                layout: 'horizontal',
+                align: 'center',
+                verticalAlign: 'bottom',
+                borderWidth: 1
+            },
+            series: ydata
+        });
+        var chart = $('#container').highcharts();
+        chart.series[1].hide(); chart.series[2].hide();
+    }
+
+    function createShowingTable(data) {
+        //获取后台传过来的jsonData,并进行解析 
+        //var dataArray = $.parseJSON(data.jsonData);
+        //此处需要让其动态的生成一个table并填充数据
+        var dataArray = data;
+        var tableStr = "";
+        tableStr = tableStr + "<thead><tr><th>浏览时间</th><th>页面来源</th><th>受访</th><th>IP</th><th>地区</th></tr></thead>";
+        var len = dataArray.length > 30 ? 30 : dataArray.length;
+
+        for (var i = 0; i < len; i++) {
+            tableStr = tableStr + "<tr><td>" + dataArray[i].dTime + "</td><td><a target='_blank' href='" + decodeURIComponent(dataArray[i].SourcePath) + "'>" + decodeURIComponent(dataArray[i].SourcePath).substr(0, 50) + "</a></td><td><a target='_blank' href='" + decodeURIComponent(dataArray[i].LastAccessPage) + "'>" + decodeURIComponent(dataArray[i].LastAccessPage) + "</a></td><td>" + dataArray[i].ClientIP + "</td><td>" + dataArray[i].Province + dataArray[i].City + "</td></tr>";
+            //            tableStr = tableStr + "<tr id='tr0" + dataArray[i].Code + "' style='display:none;'><td colspan='7'><table><tr><td>" + dataArray[i].ISP + "</td><td>" + dataArray[i].Language + "</td><td>" + dataArray[i].dType + "</td><td>" + dataArray[i].OS + "</td><td>" + dataArray[i].size + "</td><td>" + dataArray[i].Browser + "</td><td>" + dataArray[i].BrowserEdition + "</td></tr></table></td></tr>";
+            //            tableStr = tableStr + "<tr id='tr" + dataArray[i].Code + "' style='display:none;'><td colspan='7'><table id='dtable" + dataArray[i].Code + "'></table></td></tr>";
+        }
+        tableStr = tableStr + "";
+        //将动态生成的table添加的事先隐藏的div中. 
+        $("#dataTable").html(tableStr);
+    }
+
+    function showAll(id) {
+        var sessionid = id.substring(3);
+        $("#tr" + sessionid).toggle();
+        if ($("#img" + sessionid).html() == ' - ')
+            $("#img" + sessionid).html(' + ');
+        else
+            $("#img" + sessionid).html(' - ');
+    }
+
+    function createpiecharts(data) {
+        $('#pieChart').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: '新老访客分布'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.y}</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [{
+                type: 'pie',
+                name: '访问量',
+                data: data
+            }],
+            exporting:
+            {
+                enable: false
+            }
+        });
+    }
+
+</script>   
+
+<div>
+    <div style="min-width: 100%; height: 100%;margin:0 auto;">
+        <div style="float:left; width: 200px; margin:30px;" id="sumVisited"></div>
+        <div style="width: 300px; height: 180px; margin: 0 auto; float:left" id="pieChart"></div>
+        <div style="float:left; width: 300px; text-align:center; margin-left:100px; margin-top:20px; font-weight:700; font-size:14px;" id="surrentNum"></div>
+    </div>
+    <div style="clear:both;">
+        <div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+    </div>
+    <div id="table_column" class="column cf" style="clear:both">
+          <div class="title">在线情况汇总表</div>
+          <div>
+            <table id="dataTable" class="tablesorter"></table>
+          </div>
+    </div>
+</div>
