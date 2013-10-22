@@ -1,0 +1,85 @@
+﻿@model SL_FX.Models.slsoft_ias_sys_t_site
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>slsoft_ias_sys_t_site</legend>
+
+    <div class="display-label">SiteID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SiteID)
+    </div>
+
+    <div class="display-label">SiteCode</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SiteCode)
+    </div>
+
+    <div class="display-label">SiteName</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SiteName)
+    </div>
+
+    <div class="display-label">DomainName</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DomainName)
+    </div>
+
+    <div class="display-label">Province</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Province)
+    </div>
+
+    <div class="display-label">City</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.City)
+    </div>
+
+    <div class="display-label">Area</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Area)
+    </div>
+
+    <div class="display-label">SiteType</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SiteType)
+    </div>
+
+    <div class="display-label">SiteAdmin</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SiteAdmin)
+    </div>
+
+    <div class="display-label">RunningState</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RunningState)
+    </div>
+
+    <div class="display-label">IsValid</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsValid)
+    </div>
+
+    <div class="display-label">CreateTime</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateTime)
+    </div>
+
+    <div class="display-label">ModifiyTime</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ModifiyTime)
+    </div>
+
+    <div class="display-label">AuditState</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AuditState)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,51 @@
+﻿@model IEnumerable<SL_FX.Models.slsoft_ias_sys_t_user>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<h2>站点授权</h2>
+
+<div>选择站点：@Html.DropDownList("SiteList")</div>
+
+<p>站点授权列表</p>
+<table>
+    <tr>
+        <th>
+            
+        </th>
+        <th>
+            管理员姓名
+        </th>
+        <th>
+            授权站点
+        </th>
+        <th>
+            备注
+        </th>
+        <th>
+            操作
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NickName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item)
+        </td>
+        <td>
+            <a href="#" target="_blank">取消授权</a>
+        </td>
+    </tr>
+}
+
+</table>

@@ -6,7 +6,6 @@ namespace SL_FX.Models
     public class slsoft_ias_bus_t_session
     {
         public string Code { get; set; }
-        public string UserCode { get; set; }
         public Nullable<int> StatisticsSite_ID { get; set; }
         public string StatisticsSite_Code { get; set; }
         public Nullable<int> SourceClass_ID { get; set; }

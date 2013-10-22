@@ -15,9 +15,6 @@ namespace SL_FX.Models.Mapping
                 .IsRequired()
                 .HasMaxLength(128);
 
-            this.Property(t => t.UserCode)
-                .HasMaxLength(128);
-
             this.Property(t => t.StatisticsSite_Code)
                 .HasMaxLength(512);
 
@@ -93,7 +90,6 @@ namespace SL_FX.Models.Mapping
             // Table & Column Mappings
             this.ToTable("slsoft_ias_bus_t_session", "slsoft_iasdb");
             this.Property(t => t.Code).HasColumnName("Code");
-            this.Property(t => t.UserCode).HasColumnName("UserCode");
             this.Property(t => t.StatisticsSite_ID).HasColumnName("StatisticsSite_ID");
             this.Property(t => t.StatisticsSite_Code).HasColumnName("StatisticsSite_Code");
             this.Property(t => t.SourceClass_ID).HasColumnName("SourceClass_ID");

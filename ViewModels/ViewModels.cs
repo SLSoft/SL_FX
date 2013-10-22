@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-
+using SL_FX.Models;
 
 namespace SL_FX.ViewModels
 {
@@ -84,4 +84,12 @@ namespace SL_FX.ViewModels
 
     }
     #endregion
+
+    public class VM_UserSite
+    {
+        public IEnumerable<slsoft_ias_sys_t_user> Users { get; set; }
+        public IEnumerable<slsoft_ias_sys_t_userauthorization> mapping { get; set; }
+        public IEnumerable<slsoft_ias_sys_t_site> Sites { get; set; }
+    }
+
 }

@@ -9,9 +9,9 @@ namespace SL_FX.Models
         public string SiteCode { get; set; }
         public string SiteName { get; set; }
         public string DomainName { get; set; }
-        public Nullable<int> Province { get; set; }
-        public Nullable<int> City { get; set; }
-        public Nullable<int> Area { get; set; }
+        public string Province { get; set; }
+        public string City { get; set; }
+        public string Area { get; set; }
         public string SiteType { get; set; }
         public string SiteAdmin { get; set; }
         public string RunningState { get; set; }

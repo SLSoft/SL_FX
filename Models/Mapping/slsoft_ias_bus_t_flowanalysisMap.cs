@@ -48,8 +48,6 @@ namespace SL_FX.Models.Mapping
             this.Property(t => t.IP).HasColumnName("IP");
             this.Property(t => t.NewUV).HasColumnName("NewUV");
             this.Property(t => t.Session).HasColumnName("Session");
-            this.Property(t => t.PageLength).HasColumnName("PageLength");
-            this.Property(t => t.PageOut).HasColumnName("PageOut");
             this.Property(t => t.ThePerCapitaBrowsingPages).HasColumnName("ThePerCapitaBrowsingPages");
             this.Property(t => t.AvgDepthCount).HasColumnName("AvgDepthCount");
             this.Property(t => t.AvgTimeSpent).HasColumnName("AvgTimeSpent");

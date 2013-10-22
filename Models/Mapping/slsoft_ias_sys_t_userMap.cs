@@ -11,6 +11,9 @@ namespace SL_FX.Models.Mapping
             this.HasKey(t => t.UserID);
 
             // Properties
+            this.Property(t => t.UserID)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+
             this.Property(t => t.UserName)
                 .HasMaxLength(200);
 
@@ -18,9 +21,6 @@ namespace SL_FX.Models.Mapping
                 .HasMaxLength(100);
 
             this.Property(t => t.NickName)
-                .HasMaxLength(200);
-
-            this.Property(t => t.CorpName)
                 .HasMaxLength(200);
 
             this.Property(t => t.Email)
@@ -41,7 +41,6 @@ namespace SL_FX.Models.Mapping
             this.Property(t => t.UserName).HasColumnName("UserName");
             this.Property(t => t.Password).HasColumnName("Password");
             this.Property(t => t.NickName).HasColumnName("NickName");
-            this.Property(t => t.CorpName).HasColumnName("CorpName");
             this.Property(t => t.Email).HasColumnName("Email");
             this.Property(t => t.Mphone).HasColumnName("Mphone");
             this.Property(t => t.UserLevel).HasColumnName("UserLevel");
@@ -49,6 +48,7 @@ namespace SL_FX.Models.Mapping
             this.Property(t => t.IsValid).HasColumnName("IsValid");
             this.Property(t => t.CreateTime).HasColumnName("CreateTime");
             this.Property(t => t.ModifiyTime).HasColumnName("ModifiyTime");
+            this.Property(t => t.ParentUserID).HasColumnName("ParentUserID");
         }
     }
 }

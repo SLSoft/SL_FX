@@ -22,8 +22,6 @@ namespace SL_FX.Models
         public Nullable<int> IP { get; set; }
         public string NewUV { get; set; }
         public Nullable<int> Session { get; set; }
-        public Nullable<int> PageLength { get; set; }
-        public Nullable<int> PageOut { get; set; }
         public Nullable<int> ThePerCapitaBrowsingPages { get; set; }
         public string AvgDepthCount { get; set; }
         public string AvgTimeSpent { get; set; }

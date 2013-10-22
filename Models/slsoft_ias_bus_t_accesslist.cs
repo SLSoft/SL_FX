@@ -27,8 +27,6 @@ namespace SL_FX.Models
         public string DeviceType { get; set; }
         public string AboutDevice { get; set; }
         public string OperationSystem { get; set; }
-        public Nullable<int> ClientX { get; set; }
-        public Nullable<int> ClientY { get; set; }
         public string Resolution { get; set; }
         public string Color { get; set; }
         public string UserAgent { get; set; }

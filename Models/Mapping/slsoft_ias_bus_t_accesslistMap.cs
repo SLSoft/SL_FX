@@ -19,7 +19,7 @@ namespace SL_FX.Models.Mapping
                 .HasMaxLength(512);
 
             this.Property(t => t.Session_Code)
-                .HasMaxLength(128);
+                .HasMaxLength(512);
 
             this.Property(t => t.SourceClass_Code)
                 .HasMaxLength(512);
@@ -114,8 +114,6 @@ namespace SL_FX.Models.Mapping
             this.Property(t => t.DeviceType).HasColumnName("DeviceType");
             this.Property(t => t.AboutDevice).HasColumnName("AboutDevice");
             this.Property(t => t.OperationSystem).HasColumnName("OperationSystem");
-            this.Property(t => t.ClientX).HasColumnName("ClientX");
-            this.Property(t => t.ClientY).HasColumnName("ClientY");
             this.Property(t => t.Resolution).HasColumnName("Resolution");
             this.Property(t => t.Color).HasColumnName("Color");
             this.Property(t => t.UserAgent).HasColumnName("UserAgent");

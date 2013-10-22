@@ -11,6 +11,9 @@ namespace SL_FX.Models.Mapping
             this.HasKey(t => t.ID);
 
             // Properties
+            this.Property(t => t.ID)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+
             // Table & Column Mappings
             this.ToTable("slsoft_ias_sys_t_userauthorization", "slsoft_iasdb");
             this.Property(t => t.ID).HasColumnName("ID");

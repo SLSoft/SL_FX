@@ -11,6 +11,9 @@ namespace SL_FX.Models.Mapping
             this.HasKey(t => t.SiteID);
 
             // Properties
+            this.Property(t => t.SiteID)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+
             this.Property(t => t.SiteCode)
                 .HasMaxLength(200);
 
@@ -19,6 +22,15 @@ namespace SL_FX.Models.Mapping
 
             this.Property(t => t.DomainName)
                 .HasMaxLength(200);
+
+            this.Property(t => t.Province)
+                .HasMaxLength(20);
+
+            this.Property(t => t.City)
+                .HasMaxLength(20);
+
+            this.Property(t => t.Area)
+                .HasMaxLength(20);
 
             this.Property(t => t.SiteType)
                 .HasMaxLength(200);

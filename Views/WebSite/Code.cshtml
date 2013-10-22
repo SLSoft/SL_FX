@@ -1,0 +1,23 @@
+﻿@{
+    ViewBag.Title = "CodeManage";
+    Layout = null;
+}
+<script src="@Url.Content("~/Scripts/jquery-1.10.2.min.js")" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(function () {
+        var cursite = $("#SiteList").val();
+        $("#SiteList").change(function () {
+            cursite = $("#SiteList").val();
+            $("#code").val("\<script src='http://60.191.205.94/start?sId=7&show_id=" + cursite + " type='text/javascript' charset='UTF-8'\></script\>");
+        });
+        $("#code").val("\<script src='http://60.191.205.94/start?sId=7&show_id=" + cursite + " type='text/javascript' charset='UTF-8'\></script\>");
+    });
+</script>
+<h2>代码管理</h2>
+<div>选择站点：@Html.DropDownList("SiteList")</div>
+<div><p>网站监控代码</p><textarea id="code" rows="3" style="width:500px";></textarea></div>
+<div><p>注意事项</p>1、请将代码添加到网站全部页面的标签&lt/body&gt;之前；<br />
+2、为了保证统计数据的准确，请将分析统计代码放在其他代码之前；<br />
+3、若网站为框架式网站，请在框架集页面和子框架页面均安装统计代码，框架集页面中，请安装在&lt;/head&gt;标签前；<br />
+4、正确嵌入代码后，1分钟即可查看网站的实时数据，次日可以查看昨日的全部数据。</div>
