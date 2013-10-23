@@ -10,6 +10,7 @@ namespace SL_FX.Models
         public slsoft_ias_sys_t_user()
         {
             IsValid = true;
+     
         }
         public int UserID { get; set; }
         [Required(ErrorMessage = "必须填写用户名")]

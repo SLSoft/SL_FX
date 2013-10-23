@@ -9,6 +9,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Drawing.Imaging;
 using SL_FX.ViewModels;
+using System.Data;
 
 namespace SL_FX.Controllers
 {
@@ -95,6 +96,7 @@ namespace SL_FX.Controllers
 
                 userInfo.UserName = member.UserName;          //用户名
                 userInfo.Password = member.Password;          //密码
+                userInfo.ConfirmPassword = member.Password;   //
                 userInfo.NickName = member.NickName;          //姓名
                 userInfo.Email = member.Email;                //电子邮箱
                 userInfo.CorpName = member.CorpName;          //企业名称
@@ -109,13 +111,31 @@ namespace SL_FX.Controllers
         // POST: /Member/Edit/5
 
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(FormCollection collection, VM_EditMember vm_edit_member)
         {
             try
             {
                 // TODO: Add update logic here
- 
-                return RedirectToAction("Index");
+                var member = CurrentUser();
+                if (member != null)
+                {
+                    db.Entry(member).State = EntityState.Modified;
+                    member.UserName = vm_edit_member.UserName;          //用户名
+                    member.Password = vm_edit_member.Password;          //密码
+
+                    member.NickName = vm_edit_member.NickName;          //姓名
+                    member.Email = vm_edit_member.Email;                //电子邮箱
+                    member.CorpName = vm_edit_member.CorpName;          //企业名称
+                    member.Mphone = vm_edit_member.Mphone;              //手机号
+
+                    member.ModifiyTime = DateTime.Now;                  //修改时间
+
+                    db.SaveChanges();
+
+
+                }
+                return PartialView(vm_edit_member);
+                //return RedirectToAction("Index");
             }
             catch
             {
@@ -161,7 +181,14 @@ namespace SL_FX.Controllers
         //验证
         public JsonResult CheckLoginName(string UserName)
         {
-            return Json(!db.slsoft_ias_sys_t_user.Any(m => m.UserName == UserName), JsonRequestBehavior.AllowGet);
+            try
+            {
+                return Json(!db.slsoft_ias_sys_t_user.Any(m => m.UserName == UserName), JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                return Json(!db.slsoft_ias_sys_t_user.Any(m => m.UserName == UserName), JsonRequestBehavior.AllowGet);
+            }
         }
 
 
