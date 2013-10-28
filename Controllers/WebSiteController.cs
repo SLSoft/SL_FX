@@ -17,6 +17,10 @@ namespace SL_FX.Controllers
         public ViewResult Index()
         {
             var t_site = db.slsoft_ias_sys_t_site.Where(s => s.IsValid == true).ToList();
+            foreach (var site in t_site)
+            {
+                site.AreaName = GetProvinceName(site.Province) + GetCityName(site.City) + GetAreaName(site.Area);
+            }
             return View(t_site);
         }
 
@@ -45,7 +49,7 @@ namespace SL_FX.Controllers
                     areaid = fc["ddlArea"].ToString();
                 t_site.SiteCode = GetSiteCode(areaid);
                 t_site.City = fc["ddlCity"] == null ? "" : fc["ddlCity"].ToString();
-                t_site.Area = fc["ddlArea"] == null ? "" : fc["ddlCity"].ToString();
+                t_site.Area = fc["ddlArea"] == null ? "" : fc["ddlArea"].ToString();
                 t_site.SiteAdmin = "0";
                 t_site.RunningState = "1";
                 t_site.IsValid = true;
@@ -120,6 +124,14 @@ namespace SL_FX.Controllers
             return Json(Area, JsonRequestBehavior.AllowGet);
         }
 
-        
+        public ViewResult Query()
+        {
+            var t_site = db.slsoft_ias_sys_t_site.Where(s => s.IsValid == true).ToList();
+            foreach (var site in t_site)
+            {
+                site.AreaName = GetProvinceName(site.Province) + GetCityName(site.City) + GetAreaName(site.Area);
+            }
+            return View(t_site);
+        }
     }
 }

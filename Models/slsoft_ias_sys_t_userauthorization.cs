@@ -8,5 +8,17 @@ namespace SL_FX.Models
         public int ID { get; set; }
         public Nullable<int> UserID { get; set; }
         public Nullable<int> SiteID { get; set; }
+
+        public string SiteName
+        {
+            get
+            {
+                slsoft_iasdbContext db = new slsoft_iasdbContext();
+                if (db.slsoft_ias_sys_t_site.Find(this.SiteID) != null)
+                    return db.slsoft_ias_sys_t_site.Find(this.SiteID).SiteName;
+                else
+                    return "";
+            }
+        }
     }
 }
