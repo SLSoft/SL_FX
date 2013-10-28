@@ -23,6 +23,9 @@ namespace SL_FX.Controllers
             return View();
         }
 
+
+
+
         //
         // GET: /Member/Details/5
 
@@ -30,6 +33,64 @@ namespace SL_FX.Controllers
         {
             return View();
         }
+
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="fc"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult ChangePassword(FormCollection fc)
+        {
+            return View();
+        }
+
+        public ActionResult Login()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Login(FormCollection fc)
+        {
+            try
+            {
+                if (fc["verify"] != Session["ValidateCode"].ToString())
+                {
+
+                    return View();
+                }
+                string strUserName = fc["Username"];
+                slsoft_ias_sys_t_user member = db.slsoft_ias_sys_t_user.Where(m => m.UserName == strUserName).First();
+                if (member != null && member.Password == fc["password"])
+                {
+                    Session["UserID"] = member.UserID;
+                    Session["UserName"] = member.UserName;
+        
+
+                    //RegisterLoginInfo();
+
+                    if (Session["RedirectUrl"] != null && Session["RedirectUrl"].ToString() != "")
+                    {
+                        return Redirect(Session["RedirectUrl"].ToString());
+                    }
+                    return RedirectToAction("Edit", "Member");
+                }
+                else
+                {
+                    ViewData["error"] = "密码错误，请检查后重新尝试!";
+                    return View();
+                }
+            }
+            catch
+            {
+                ViewData["error"] = "登陆名错误，请检查后重新尝试!";
+                return View();
+            } 
+
+   
+        }
+
+
 
         //
         // GET: /Member/Create
@@ -65,8 +126,8 @@ namespace SL_FX.Controllers
                     userInfo.CorpName = user.CorpName;          //企业名称
                     userInfo.Mphone = user.Mphone;              //手机号
 
-                    userInfo.UserLevel = "管理员";                    //用户级别
-                    userInfo.UserState = "激活";                  //用户状态
+                    userInfo.UserLevel = "0";                    //用户级别
+                    userInfo.UserState = "0";                  //用户状态
                     userInfo.IsValid = true;                    //有效标志
                     userInfo.CreateTime = DateTime.Now;         //创建时间
                     userInfo.ModifiyTime = DateTime.Now;        //修改时间
