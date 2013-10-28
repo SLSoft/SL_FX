@@ -7,11 +7,11 @@ namespace SL_FX.Models
 {
     public class slsoft_ias_sys_t_user
     {
-
         public slsoft_ias_sys_t_user()
         {
             IsValid = true;
         }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserID { get; set; }
         [Required(ErrorMessage = "必须填写用户名")]
