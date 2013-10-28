@@ -11,6 +11,8 @@ namespace SL_FX.Models
         {
             IsValid = true;
         }
+
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserID { get; set; }
         [Required(ErrorMessage = "必须填写用户名")]
         [Display(Name = "用户名")]
@@ -38,8 +40,6 @@ namespace SL_FX.Models
         public Nullable<System.DateTime> CreateTime { get; set; }
         public Nullable<System.DateTime> ModifiyTime { get; set; }
 
-
-        public virtual ICollection<slsoft_ias_sys_t_site> usersites { get; set; }
-
+        public virtual ICollection<slsoft_ias_sys_t_userauthorization> usersites { get; set; }
     }
 }

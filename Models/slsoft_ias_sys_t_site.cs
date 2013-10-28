@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace SL_FX.Models
 {
@@ -7,7 +9,9 @@ namespace SL_FX.Models
     {
         public int SiteID { get; set; }
         public string SiteCode { get; set; }
+        [Required(ErrorMessage = "必须填写站点名称")]
         public string SiteName { get; set; }
+        [Required(ErrorMessage = "必须填写站点域名")]
         public string DomainName { get; set; }
         public string Province { get; set; }
         public string City { get; set; }
@@ -19,5 +23,7 @@ namespace SL_FX.Models
         public Nullable<System.DateTime> CreateTime { get; set; }
         public Nullable<System.DateTime> ModifiyTime { get; set; }
         public string AuditState { get; set; }
+
+        public string AreaName;
     }
 }
