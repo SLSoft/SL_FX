@@ -34,15 +34,51 @@ namespace SL_FX.Controllers
             return View();
         }
 
+
+        public ActionResult ChangePassword()
+        {
+            return View();
+        }
+
         /// <summary>
         /// 修改密码
         /// </summary>
         /// <param name="fc"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult ChangePassword(FormCollection fc)
+        public ActionResult ChangePassword(FormCollection fc,VM_ChangePassword cp)
         {
-            return View();
+            try
+            {
+                // TODO: Add update logic here
+                var member = CurrentUser();
+                if (member != null)
+                {
+                    if (fc["OldPassword"] != member.Password)
+                    {
+                        return View(cp);
+                    }
+
+                    db.Entry(member).State = EntityState.Modified;
+
+                    member.Password = fc["Password"];          //密码
+
+
+                    member.ModifiyTime = DateTime.Now;                  //修改时间
+
+                    db.SaveChanges();
+
+
+                }
+                return PartialView();
+                //return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+
+      
         }
 
         public ActionResult Login()
@@ -181,21 +217,23 @@ namespace SL_FX.Controllers
                 if (member != null)
                 {
                     db.Entry(member).State = EntityState.Modified;
-                    member.UserName = vm_edit_member.UserName;          //用户名
-                    member.Password = vm_edit_member.Password;          //密码
+                   
 
                     member.NickName = vm_edit_member.NickName;          //姓名
-                    member.Email = vm_edit_member.Email;                //电子邮箱
+                   
                     member.CorpName = vm_edit_member.CorpName;          //企业名称
-                    member.Mphone = vm_edit_member.Mphone;              //手机号
-
+                   
                     member.ModifiyTime = DateTime.Now;                  //修改时间
 
                     db.SaveChanges();
 
+                    vm_edit_member.UserName = member.UserName;          //用户名
+                    vm_edit_member.Password = member.Password;          //密码
+                    vm_edit_member.Email = member.Email;                //电子邮箱
+                    vm_edit_member.Mphone = member.Mphone;              //手机号
 
                 }
-                return PartialView(vm_edit_member);
+                return View(vm_edit_member);
                 //return RedirectToAction("Index");
             }
             catch
@@ -242,14 +280,14 @@ namespace SL_FX.Controllers
         //验证
         public JsonResult CheckLoginName(string UserName)
         {
-            try
-            {
                 return Json(!db.slsoft_ias_sys_t_user.Any(m => m.UserName == UserName), JsonRequestBehavior.AllowGet);
-            }
-            catch(Exception ex)
-            {
-                return Json(!db.slsoft_ias_sys_t_user.Any(m => m.UserName == UserName), JsonRequestBehavior.AllowGet);
-            }
+
+        }
+
+        public JsonResult CheckPassword(string OldPassword)
+        {
+            return Json(!db.slsoft_ias_sys_t_user.Any(m => m.UserID == Convert.ToInt32(Session["UserID"].ToString()) && m.Password == OldPassword), JsonRequestBehavior.AllowGet);
+
         }
 
 

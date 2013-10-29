@@ -1,84 +1,112 @@
 ﻿@model SL_FX.ViewModels.VM_SignUp
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "用户注册";
     Layout = "~/Views/Shared/MasterPage.cshtml";
 }
-<h2>
-    Create</h2>
-
-
 @using (Html.BeginForm())
 {
     @Html.ValidationSummary(true)
-    <fieldset>
-        <legend>用户注册</legend>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.UserName)
-            @Html.EditorFor(model => model.UserName)
-            @Html.ValidationMessageFor(model => model.UserName)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Password)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Password)
-            @Html.ValidationMessageFor(model => model.Password)<span style="color: #999;
-                font-size: 10px;">(字母开头，长度6~18位)</span>
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.ConfirmPassword)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.ConfirmPassword)
-            @Html.ValidationMessageFor(model => model.ConfirmPassword)<span style="color: #999;
-                font-size: 10px;">(字母开头，长度6~18位)</span>
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.NickName)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.NickName)
-            @Html.ValidationMessageFor(model => model.NickName)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.CorpName)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.CorpName)
-            @Html.ValidationMessageFor(model => model.CorpName)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Email)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Email)
-            @Html.ValidationMessageFor(model => model.Email)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Mphone)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Mphone)
-            @Html.ValidationMessageFor(model => model.Mphone)
-        </div>
-        <div class="editor-field">
-            验证码：<input name="verify" type="text" style="vertical-align: middle;" />
-            <img id="valiCode" style="cursor: pointer; vertical-align: middle;" src="/Member/GetValidateCode"
-                alt="验证码" />
-            <script>
-                $(function () {
-                    $("#valiCode").bind("click", function () {
-                        this.src = "/Member/GetValidateCode?time=" + (new Date()).getTime();
+
+    
+    <div id="sup">
+        <div class="wrap">
+            <h1>
+                <a href="#">我的站点</a>&gt;<a href="#">用户注册</a></h1>
+            <div class="drop">
+                <div class="drop_tit">
+                    @Html.LabelFor(model => model.UserName)：</div>
+                <div class="selectBox">
+                    @Html.EditorFor(model => model.UserName)
+                </div>
+                @Html.ValidationMessageFor(model => model.UserName)
+            </div>
+            <div class="clear">
+            </div>
+            <div class="drop">
+                <div class="drop_tit">
+                    @Html.LabelFor(model => model.Password)：</div>
+                <div class="selectBox">
+                    @Html.EditorFor(model => model.Password)
+                </div>@Html.ValidationMessageFor(model => model.Password)
+                <span style="color: #999; font-size: 10px;">(字母开头，长度6~18位)</span>
+            </div>
+            <div class="clear">
+            </div>
+            <div class="drop">
+                <div class="drop_tit">
+                    @Html.LabelFor(model => model.ConfirmPassword)：</div>
+                <div class="selectBox">
+                    @Html.EditorFor(model => model.ConfirmPassword)
+                   
+                </div> @Html.ValidationMessageFor(model => model.ConfirmPassword)<span style="color: #999;
+                        font-size: 10px;">(字母开头，长度6~18位)</span>
+            </div>
+            <div class="clear">
+            </div>
+            <div class="drop">
+                <div class="drop_tit">
+                    @Html.LabelFor(model => model.NickName) ：</div>
+                <div class="selectBox">
+                    @Html.EditorFor(model => model.NickName)
+                </div>
+                @Html.ValidationMessageFor(model => model.NickName)
+            </div>
+            <div class="clear">
+            </div>
+            <div class="drop">
+                <div class="drop_tit">
+                    @Html.LabelFor(model => model.CorpName)：</div>
+                <div class="selectBox">
+                    @Html.EditorFor(model => model.CorpName)
+                </div>@Html.ValidationMessageFor(model => model.CorpName)
+            </div>
+            <div class="clear">
+            </div>
+            <div class="drop">
+                <div class="drop_tit">
+                    @Html.LabelFor(model => model.Email)：</div>
+                <div class="selectBox">
+                    @Html.EditorFor(model => model.Email)
+                </div>
+                @Html.ValidationMessageFor(model => model.Email)
+            </div>
+            <div class="clear">
+            </div>
+            <div class="drop">
+                <div class="drop_tit">
+                    @Html.LabelFor(model => model.Mphone)：</div>
+                <div class="selectBox">
+                    @Html.EditorFor(model => model.Mphone)
+                </div>
+                @Html.ValidationMessageFor(model => model.Mphone)
+            </div>
+            <div class="clear">
+            </div>
+            <div class="drop">
+                <div class="drop_tit">
+                    验证码：</div>
+                <div class="selectBox">
+                    <input name="verify" type="text" style="vertical-align: middle;" />
+                </div>
+                <img id="valiCode" class="verification-code" style="cursor: pointer; height:35px" src="/Member/GetValidateCode"
+                    alt="验证码" />
+                <script>
+                    $(function () {
+                        $("#valiCode").bind("click", function () {
+                            this.src = "/Member/GetValidateCode?time=" + (new Date()).getTime();
+                        });
                     });
-                });
                 
-            </script>
+                </script>
+            </div>
+            <div class="clear">
+            </div>
+            <div class="step">
+                <input type="submit" value="注册" class="pre_btn" />
+            </div>
+            <div class="clear">
+            </div>
         </div>
-        <p>
-            <input type="submit" value="注册" />
-        </p>
-    </fieldset>
+    </div>
+
 }
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>

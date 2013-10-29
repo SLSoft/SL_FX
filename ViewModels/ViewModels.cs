@@ -83,6 +83,28 @@ namespace SL_FX.ViewModels
 
 
     }
+
+    public class VM_ChangePassword
+    {
+        [Remote("CheckPassword", "Member", ErrorMessage = "原密码不正确")]
+        [DataType(DataType.Password)]
+        [Required(ErrorMessage = "必须填写原密码")]
+        [Display(Name = "原密码")]
+        [RegularExpression(@"^[a-zA-Z]\w{5,17}$", ErrorMessage = "密码格式不正确")]
+        public string OldPassword { get; set; }
+        [DataType(DataType.Password)]
+        [Required(ErrorMessage = "必须填写新密码")]
+        [Display(Name = "新密码")]
+        [RegularExpression(@"^[a-zA-Z]\w{5,17}$", ErrorMessage = "密码格式不正确")]
+        public string Password { get; set; }
+        [DataType(DataType.Password)]
+        [Display(Name = "确认密码")]
+        [Compare("Password", ErrorMessage = "密码必须一致")]
+        [RegularExpression(@"^[a-zA-Z]\w{5,17}$", ErrorMessage = "密码格式不正确")]
+        public string ConfirmPassword { get; set; }
+
+
+    }
     #endregion
 
     public class VM_UserSite

@@ -15,7 +15,7 @@ body { color: #333; }
 #top a:link, #top a:visited { color: #FFF; text-decoration: none; }
 #top a:active, #top a:hover { color: #0FF; text-decoration: none; }
 /*==NAV==*/
-#nav { background: #FFF url(../images/nav_bg.png) repeat-x; height: 65px; border-bottom: 1px solid #BBB; }
+#nav { background: #FFF url(../images/Login/nav_bg.png) repeat-x; height: 65px; border-bottom: 1px solid #BBB; }
 #nav .logo { float: left; }
 /*==Banner==*/
 #banner { height: 345px; background: #0074cd; border-top: 1px solid #FFF; }
@@ -24,11 +24,11 @@ body { color: #333; }
 .img-con a { display: none; }
 .img-btn { left: 460px; top: 325px; z-index: 100; position: absolute; }
 .img-btn a { float: left; margin-right: 10px; width: 13px; height: 13px; cursor: pointer; FILTER: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/imgautobtn2.png');
-background: url(../images/imgautobtn2.png) no-repeat; }
+background: url(../../Content/images/Login/images/imgautobtn2.png) no-repeat; }
 .img-btn .img-btn-checked { background: url(../images/imgautobtn1.png) no-repeat; }
 .login { position: absolute; z-index: 1000; right: 0px; top: 40px; }
 .login-bg { width: 220px; height: 260px; /*background: #3d9bd9;*/ background: rgba(117,179,255,0.3); padding: 8px; }
-#login-form { width: 200px; height: 240px; background: #eaeaea; padding: 10px }
+.login-form { width: 200px; height: 240px; background: #eaeaea; padding: 10px }
 .login_tit { font-family: "微软雅黑"; font-size: 18px; margin-bottom: 10px; }
 .input-acc { width: 180px; border: 1px solid #ddd; margin-bottom: 10px; }
 .login-bg .login-yzm img { height: 28px; vertical-align: top; }
@@ -38,12 +38,12 @@ background: url(../images/imgautobtn2.png) no-repeat; }
 #quit { background: #e8e8e8; height: 240px; padding: 30px 0px; }
 .qt { height: 52px; font-family: "微软雅黑"; font-size: 24px; color: #666; line-height: 52px; margin: 30px 50px 30px 0px; float: left; width: 280px; text-align: center; }
 .qt01, .qt02, .qt03, .qt04, .qt05, .qt06 { display: block; float: left; width: 55px; height: 52px; }
-.qt01 { background: url(../images/quit.png) 0px 0px no-repeat; }
-.qt02 { background: url(../images/quit.png) -55px 0px no-repeat; }
-.qt03 { background: url(../images/quit.png) -110px 0px no-repeat; }
-.qt04 { background: url(../images/quit.png) -166px 0px no-repeat; }
-.qt05 { background: url(../images/quit.png) -220px 0px no-repeat; }
-.qt06 { background: url(../images/quit.png) -275px 0px no-repeat; }
+.qt01 { background: url(../images/Login/quit.png) 0px 0px no-repeat; }
+.qt02 { background: url(../images/Login/quit.png) -55px 0px no-repeat; }
+.qt03 { background: url(../images/Login/quit.png) -110px 0px no-repeat; }
+.qt04 { background: url(../images/Login/quit.png) -166px 0px no-repeat; }
+.qt05 { background: url(../images/Login/quit.png) -220px 0px no-repeat; }
+.qt06 { background: url(../images/Login/quit.png) -275px 0px no-repeat; }
 #foot { background: #3f3f3f; height: 180px; padding: 20px; }
 #foot a:link { color: #FFF; text-decoration: none; }
 #foot a:visited { color: #FFF; text-decoration: none; }
@@ -56,7 +56,7 @@ background: url(../images/imgautobtn2.png) no-repeat; }
 /*站点管理*/
 #bar { /*margin-top: 10px;*/ background: #0074cd; }
 #sup { margin-bottom: 50px; }
-#sup h1 { font-family: "微软雅黑"; font-size: 16px; height: 24px; padding: 20px 0px 10px 0px; border-bottom: solid 1px #ddd; background: url(../images/house.png) no-repeat left 18px; text-indent: 20px; }
+#sup h1 { font-family: "微软雅黑"; font-size: 16px; height: 24px; padding: 20px 0px 10px 0px; border-bottom: solid 1px #ddd; background: url(../images/Login/house.png) no-repeat left 18px; text-indent: 20px; }
 #sup h1 a { margin:0px 10px; }
 #sup h1 a:link, #sup h1 a:visited { color:#333; text-decoration:none; }
 #sup h1 a:hover { color:#0073aa; text-decoration:none; }
@@ -65,7 +65,7 @@ background: url(../images/imgautobtn2.png) no-repeat; }
 #sup .list a:active, #sup .list a:hover { color: #0073aa; text-decoration: underline; }
 #sup .tr { height: 40px; line-height: 40px; font-family: "宋体"; font-size: 12px; border-bottom: solid 1px #ddd; }
 #sup .td { float: left; padding: 0px; border-right: 1px solid #ddd; text-align: center; }
-#sup .tit { background: #ddf2ff url(../images/tr_bg.png) repeat-x; font-family: "微软雅黑"; font-size: 14px; font-weight: bold; }
+#sup .tit { background: #ddf2ff url(../images/Login/tr_bg.png) repeat-x; font-family: "微软雅黑"; font-size: 14px; font-weight: bold; }
 #sup .td07, #sup .td08, #sup .tr_last { border: none; }
 #sup .td01 { width: 50px; }
 #sup .td02, #sup .td03 { width: 200px; }

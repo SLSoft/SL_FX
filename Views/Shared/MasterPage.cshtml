@@ -5,10 +5,55 @@
     <script src="@Url.Content("~/Scripts/jquery-1.10.2.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
-
+    <link href="../../Content/Styles/index.css" rel="stylesheet" type="text/css" />
 
 </head>
 <body>
+    <div id="top">
+  	<div class="wrap">
+      <div class="left">欢迎使用神路数据统计分析！</div>
+      <div class="right"><a href="#">登录</a><span>|</span><a href="#">注册</a></div>
+    </div>
+  </div>
+  <!--top结束-->
+  <div id="nav">
+  	<div class="wrap">
+    	<div class="logo"><img src="../../Content/images/Login/logo2.png" width="245" height="60"></div>
+    </div>
+  </div>
+  <!--nav结束-->
+	<div id="bar">
+  	<div class="wrap"><img src="../../Content/images/Login/bar01.png" width="1000" height="200"> </div>
+  </div>
+  <div id="sup">
     @RenderBody()
+  </div>
+  <div id="foot">
+    <div class="wrap">
+    	<ul class="ff ff01">
+      	<h3>联系我们 CONTANT US</h3>
+      	<li>武汉神路信息咨询有限公司</li>
+      	<li>电话：<span class="f_tel">+86 27 8773 7207</span></li>
+      	<li>地址：湖北省武汉市武汉市武昌武珞路568号丁字桥南方帝园A座1004室</li> 
+      	<li>邮编：430071</li>
+      </ul>
+      <ul class="ff ff02">
+      	<h3>友情连接  LINKS</h3>
+      	<li><a href="http://www.whjs.gov.cn/">武汉市建委</a></li>
+      	<li><a href="http://www.hbsjst.gov.cn/">湖北省建设厅</a></li>
+      	<li><a href="http://www.whst.gov.cn/">武汉市科技局</a></li>
+      	<li><a href="http://www.whfdcjyzx.com.cn/">武汉房地产交易管理中心</a></li>
+      </ul>
+      <ul class="ff ff03">
+      	<h3>在线联系  ONLINE</h3>
+      	<li>如果您有任何疑问，可以在线跟我们客服联系！</li>
+        <li>If you have any questions,you can contact with us online customer service!</li>
+        <li><a target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=593166868&amp;site=qq&amp;menu=yes"><img src="../../Content/images/Login/foot_find_tu.gif" width="92" height="55"></a>
+        <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=545204727&amp;site=qq&amp;menu=yes"><img src="../../Content/images/Login/foot_find_tu.gif" width="92" height="55"></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+    
 </body>
 </html>

@@ -1,64 +1,64 @@
 ﻿@model SL_FX.ViewModels.VM_EditMember
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "个人资料";
     Layout = "~/Views/Shared/MasterPage.cshtml";
 }
-<h2>
-    Edit</h2>
-
 @using (Html.BeginForm())
 {
     @Html.ValidationSummary(true)
-    <fieldset>
-        <legend>slsoft_ias_sys_t_user</legend>
-        <div class="editor-label">
-            用户名：@Model.UserName
+
+    
+    <div id="sup">
+        <div class="wrap">
+            <h1>
+                <a href="#">我的站点</a>&gt;<a href="#">个人资料</a></h1>
+            <div class="drop">
+                <div class="drop_tit">
+                    用户名：</div>
+                <div class="txtBox">
+                    @Model.UserName</div>
+            </div>
+            <div class="clear">
+            </div>
+            <div class="drop">
+                <div class="drop_tit">
+                    密码：</div>
+                <div class="txtBox">
+                    <a href="\Member\ChangePassword">修改密码</a></div>
+            </div>
+            <div class="clear">
+            </div>
+            <div class="drop">
+                <div class="drop_tit">
+                    姓名：</div>
+                <div class="selectBox">
+                    @Html.EditorFor(model => model.NickName)
+                  </div>  @Html.ValidationMessageFor(model => model.NickName)
+            </div>
+            <div class="drop">
+                <div class="drop_tit">
+                    所属单位：</div>
+                <div class="selectBox">
+                    @Html.EditorFor(model => model.CorpName)
+                  </div>  @Html.ValidationMessageFor(model => model.CorpName)
+            </div>
+            <div class="drop">
+                <div class="drop_tit">
+                    电子邮箱：</div>
+                <div class="txtBox">
+                    @Model.Email</div>
+            </div>
+            <div class="drop">
+                <div class="drop_tit">
+                    手机：</div>
+                <div class="txtBox">
+                    @Model.Mphone</div>
+            </div>
+            <div class="step">
+                <input type="submit" value="保存" class="pre_btn" />
+            </div>
+            <div class="clear">
+            </div>
         </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Password)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Password)
-            @Html.ValidationMessageFor(model => model.Password)<span style="color: #999; font-size: 10px;">(字母开头，长度6~18位)</span>
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.ConfirmPassword)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.ConfirmPassword)
-            @Html.ValidationMessageFor(model => model.ConfirmPassword)<span style="color: #999;
-                font-size: 10px;">(字母开头，长度6~18位)</span>
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.NickName)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.NickName)
-            @Html.ValidationMessageFor(model => model.NickName)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.CorpName)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.CorpName)
-            @Html.ValidationMessageFor(model => model.CorpName)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Email)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Email)
-            @Html.ValidationMessageFor(model => model.Email)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Mphone)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Mphone)
-            @Html.ValidationMessageFor(model => model.Mphone)
-        </div>
-        <p>
-            <input type="submit" value="保存" />
-        </p>
-    </fieldset>
+    </div>
 }
