@@ -46,7 +46,7 @@ namespace SL_FX.Controllers
         /// <param name="fc"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult ChangePassword(FormCollection fc,VM_ChangePassword cp)
+        public ActionResult ChangePassword(FormCollection fc, VM_ChangePassword cp)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace SL_FX.Controllers
                 return View();
             }
 
-      
+
         }
 
         public ActionResult Login()
@@ -97,11 +97,11 @@ namespace SL_FX.Controllers
                 }
                 string strUserName = fc["Username"];
                 slsoft_ias_sys_t_user member = db.slsoft_ias_sys_t_user.Where(m => m.UserName == strUserName).First();
-                if (member != null && member.Password == fc["password"])
+                if (member != null && member.Password == fc["password"]&& member.IsValid==true)
                 {
                     Session["UserID"] = member.UserID;
-                    Session["UserName"] = member.UserName;
-        
+                    Session["UserName"] = member.NickName;
+                    ViewBag.member = member;
 
                     //RegisterLoginInfo();
 
@@ -109,7 +109,7 @@ namespace SL_FX.Controllers
                     {
                         return Redirect(Session["RedirectUrl"].ToString());
                     }
-                    return RedirectToAction("Edit", "Member");
+                    return RedirectToAction("Index", "WebSite");
                 }
                 else
                 {
@@ -121,9 +121,9 @@ namespace SL_FX.Controllers
             {
                 ViewData["error"] = "登陆名错误，请检查后重新尝试!";
                 return View();
-            } 
+            }
 
-   
+
         }
 
 
@@ -135,7 +135,7 @@ namespace SL_FX.Controllers
         {
             VM_SignUp user = new VM_SignUp();
             return View(user);
-        } 
+        }
 
         //
         // POST: /Member/Create
@@ -153,7 +153,7 @@ namespace SL_FX.Controllers
 
                         return View(user);
                     }
-                    
+
                     var userInfo = new slsoft_ias_sys_t_user();
                     userInfo.UserName = user.UserName;          //用户名
                     userInfo.Password = user.Password;          //密码
@@ -173,6 +173,21 @@ namespace SL_FX.Controllers
 
                 }
 
+                slsoft_ias_sys_t_user member = db.slsoft_ias_sys_t_user.Where(m => m.UserName == user.UserName).First();
+                if (member != null)
+                {
+                    Session["UserID"] = member.UserID;
+                    Session["UserName"] = member.UserName;
+                    ViewBag.member = member;
+
+                    //RegisterLoginInfo();
+
+                    if (Session["RedirectUrl"] != null && Session["RedirectUrl"].ToString() != "")
+                    {
+                        return Redirect(Session["RedirectUrl"].ToString());
+                    }
+                    return RedirectToAction("Index", "WebSite");
+                }
                 return RedirectToAction("Create");
             }
             catch
@@ -180,10 +195,10 @@ namespace SL_FX.Controllers
                 return View();
             }
         }
-        
+
         //
         // GET: /Member/Edit/5
- 
+
         public ActionResult Edit()
         {
             var member = CurrentUser();
@@ -201,7 +216,7 @@ namespace SL_FX.Controllers
                 return PartialView(userInfo);
             }
             return PartialView();
-  
+
         }
 
         //
@@ -217,12 +232,12 @@ namespace SL_FX.Controllers
                 if (member != null)
                 {
                     db.Entry(member).State = EntityState.Modified;
-                   
+
 
                     member.NickName = vm_edit_member.NickName;          //姓名
-                   
+
                     member.CorpName = vm_edit_member.CorpName;          //企业名称
-                   
+
                     member.ModifiyTime = DateTime.Now;                  //修改时间
 
                     db.SaveChanges();
@@ -244,7 +259,7 @@ namespace SL_FX.Controllers
 
         //
         // GET: /Member/Delete/5
- 
+
         public ActionResult Delete(int id)
         {
             return View();
@@ -259,7 +274,7 @@ namespace SL_FX.Controllers
             try
             {
                 // TODO: Add delete logic here
- 
+
                 return RedirectToAction("Index");
             }
             catch
@@ -280,7 +295,7 @@ namespace SL_FX.Controllers
         //验证
         public JsonResult CheckLoginName(string UserName)
         {
-                return Json(!db.slsoft_ias_sys_t_user.Any(m => m.UserName == UserName), JsonRequestBehavior.AllowGet);
+            return Json(!db.slsoft_ias_sys_t_user.Any(m => m.UserName == UserName), JsonRequestBehavior.AllowGet);
 
         }
 
@@ -387,6 +402,12 @@ namespace SL_FX.Controllers
             }
         }
         #endregion
+
+        public ActionResult LoginOut()
+        {
+            Session["UserID"] = null;
+            return RedirectToAction("Login");
+        }
     }
 
 
